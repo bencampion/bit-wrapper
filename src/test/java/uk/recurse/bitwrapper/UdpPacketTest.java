@@ -1,0 +1,78 @@
+package uk.recurse.bitwrapper;
+
+import org.junit.Before;
+import org.junit.Test;
+import uk.recurse.bitwrapper.annotation.Bytes;
+
+import java.nio.ByteBuffer;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+public class UdpPacketTest {
+
+    private byte[] packet;
+    private UdpPacket udp;
+
+    @Before
+    public void setup() {
+        packet = new byte[]{0, 42, 0, 94, 0, 9, 1, 0, -1};
+        udp = Wrapper.forView(UdpPacket.class).wrap(packet);
+    }
+
+    @Test
+    public void sourcePort() {
+        assertThat(udp.sourcePort(), is(42));
+    }
+
+    @Test
+    public void destinationPort() {
+        assertThat(udp.destinationPort(), is(94));
+    }
+
+    @Test
+    public void length() {
+        assertThat(udp.length(), is(9));
+    }
+
+    @Test
+    public void checksum() {
+        assertThat(udp.checksum(), is((short) 256));
+    }
+
+    @Test
+    public void payload() {
+        ByteBuffer payload = ByteBuffer.wrap(new byte[]{-1});
+        assertThat(udp.payload(), is(payload));
+    }
+
+    @Test
+    public void payload_modifyingBuffer_modifiesWrappedArray() {
+        udp.payload().put(0, (byte) 42);
+        assertThat(packet[8], is((byte) 42));
+    }
+
+    @Test
+    public void payload_modifyingWrappedArray_modifiesBuffer() {
+        packet[8] = 42;
+        assertThat(udp.payload().get(0), is((byte) 42));
+    }
+
+    private interface UdpPacket {
+
+        @Bytes(offset = 0, length = 2)
+        int sourcePort();
+
+        @Bytes(offset = 2, length = 2)
+        int destinationPort();
+
+        @Bytes(offset = 4, length = 2)
+        int length();
+
+        @Bytes(offset = 6, length = 2)
+        short checksum();
+
+        @Bytes(offset = 8, lengthExp = "length() - 8")
+        ByteBuffer payload();
+    }
+}
