@@ -36,11 +36,19 @@ class Handler extends AbstractInvocationHandler {
     private ByteBuffer getSlice(Object proxy, AnnotatedElement method) {
         checkArgument(method.isAnnotationPresent(Bytes.class));
         Bytes bytes = method.getAnnotation(Bytes.class);
+        int offset = bytes.offset();
         int length = bytes.length();
-        if (!bytes.lengthExp().isEmpty()) {
-            Expression exp = parser.parseExpression(bytes.lengthExp());
-            length = exp.getValue(proxy, Integer.class);
+        if (!bytes.offsetExp().isEmpty()) {
+            offset = eval(bytes.offsetExp(), proxy);
         }
-        return slicer.byteSlice(bytes.offset(), length);
+        if (!bytes.lengthExp().isEmpty()) {
+            length = eval(bytes.lengthExp(), proxy);
+        }
+        return slicer.byteSlice(offset, length);
+    }
+
+    private int eval(String expression, Object root) {
+        Expression exp = parser.parseExpression(expression);
+        return exp.getValue(root, Integer.class);
     }
 }

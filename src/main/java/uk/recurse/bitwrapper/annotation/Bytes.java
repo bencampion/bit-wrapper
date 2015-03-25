@@ -9,9 +9,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Bytes {
 
-    int offset();
+    int offset() default 0;
 
-    int length() default 1;
+    String offsetExp() default "";
+
+    int length() default 0;
 
     String lengthExp() default "";
 }
