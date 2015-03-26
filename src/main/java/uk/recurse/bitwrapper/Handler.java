@@ -4,6 +4,7 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
@@ -34,7 +35,15 @@ class Handler extends AbstractInvocationHandler {
     }
 
     private ByteBuffer getSlice(Object proxy, AnnotatedElement method) {
-        checkArgument(method.isAnnotationPresent(Bytes.class));
+        if (method.isAnnotationPresent(Bytes.class)) {
+            return getByteSlice(proxy, method);
+        } else if (method.isAnnotationPresent(Bits.class)) {
+            return getBitSlice(method);
+        }
+        throw new IllegalArgumentException("method must be annotated with @Bytes or @Bits");
+    }
+
+    private ByteBuffer getByteSlice(Object proxy, AnnotatedElement method) {
         Bytes bytes = method.getAnnotation(Bytes.class);
         int offset = bytes.offset();
         int length = bytes.length();
@@ -45,6 +54,11 @@ class Handler extends AbstractInvocationHandler {
             length = eval(bytes.lengthExp(), proxy);
         }
         return slicer.byteSlice(offset, length);
+    }
+
+    private ByteBuffer getBitSlice(AnnotatedElement method) {
+        Bits bits = method.getAnnotation(Bits.class);
+        return slicer.bitSlice(bits.offset(), bits.length());
     }
 
     private int eval(String expression, Object root) {

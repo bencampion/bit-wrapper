@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.expression.ExpressionException;
+import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
@@ -37,8 +38,20 @@ public class HandlerTest {
     @Test
     public void handleInvocation_byteAnnotated_returnsDecodedValue() throws Throwable {
         ByteBuffer buffer = ByteBuffer.allocate(0);
-        Method method = TestMethods.class.getMethod("annotated");
+        Method method = TestMethods.class.getMethod("byteAnnotated");
         when(slicer.byteSlice(7, 3)).thenReturn(buffer);
+        when(decoder.decode(buffer, method)).thenReturn(42);
+
+        Object returned = handler.handleInvocation(proxy, method, new Object[]{});
+
+        assertThat(returned, is((Object) 42));
+    }
+
+    @Test
+    public void handleInvocation_bitAnnotated_returnsDecodedValue() throws Throwable {
+        ByteBuffer buffer = ByteBuffer.allocate(0);
+        Method method = TestMethods.class.getMethod("bitAnnotated");
+        when(slicer.bitSlice(7, 3)).thenReturn(buffer);
         when(decoder.decode(buffer, method)).thenReturn(42);
 
         Object returned = handler.handleInvocation(proxy, method, new Object[]{});
@@ -49,7 +62,7 @@ public class HandlerTest {
     @Test
     public void handleInvocation_expressionAnnotated_returnsDecodedValue() throws Throwable {
         ByteBuffer buffer = ByteBuffer.allocate(0);
-        Method method = TestMethods.class.getMethod("expression");
+        Method method = TestMethods.class.getMethod("expressionAnnotated");
         when(proxy.offset()).thenReturn(5);
         when(proxy.length()).thenReturn(11);
         when(slicer.byteSlice(5, 11)).thenReturn(buffer);
@@ -98,10 +111,13 @@ public class HandlerTest {
     private interface TestMethods {
 
         @Bytes(offset = 7, length = 3)
-        int annotated();
+        int byteAnnotated();
+
+        @Bits(offset = 7, length = 3)
+        int bitAnnotated();
 
         @Bytes(offsetExp = "offset()", lengthExp = "length()")
-        int expression();
+        int expressionAnnotated();
 
         @Bytes(offsetExp = "doesn't compile", length = 5)
         int badSyntaxOffsetExpression();
