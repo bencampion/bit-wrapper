@@ -4,10 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import com.google.common.reflect.Reflection;
-import uk.recurse.bitwrapper.decoder.ByteBufferDecoder;
-import uk.recurse.bitwrapper.decoder.Decoder;
-import uk.recurse.bitwrapper.decoder.IntegerDecoder;
-import uk.recurse.bitwrapper.decoder.ShortDecoder;
+import uk.recurse.bitwrapper.decoder.*;
 
 import java.lang.reflect.AnnotatedElement;
 import java.nio.ByteBuffer;
@@ -40,7 +37,7 @@ public class Wrapper<T> {
     }
 
     public static <T> Wrapper<T> forView(Class<T> view) {
-        return new Builder().addDefaultDecoders().build(view);
+        return new Builder().build(view);
     }
 
     public static Builder builder() {
@@ -51,19 +48,23 @@ public class Wrapper<T> {
 
         static final List<Decoder<?>> DEFAULT_DECODERS = ImmutableList
                 .<Decoder<?>>builder()
-                .add(new ShortDecoder())
-                .add(new IntegerDecoder())
+                .add(new BooleanDecoder())
                 .add(new ByteBufferDecoder())
+                .add(new ByteDecoder())
+                .add(new CharacterDecoder())
+                .add(new DoubleDecoder())
+                .add(new FloatDecoder())
+                .add(new InetAddressDecoder())
+                .add(new IntegerDecoder())
+                .add(new LongDecoder())
+                .add(new ShortDecoder())
                 .build();
 
         final Map<Class<?>, Decoder<?>> decoders;
 
         private Builder() {
             decoders = new HashMap<>();
-        }
-
-        public Builder addDefaultDecoders() {
-            return addDecoders(DEFAULT_DECODERS);
+            addDecoders(DEFAULT_DECODERS);
         }
 
         public Builder addDecoders(Iterable<Decoder<?>> decoders) {
@@ -91,7 +92,6 @@ public class Wrapper<T> {
 
         public <T> Wrapper<T> build(Class<T> view) {
             checkArgument(view.isInterface(), view + " is not an interface");
-            checkState(!decoders.isEmpty(), " no decoders sets");
             return new Wrapper<>(view, ImmutableMap.copyOf(decoders));
         }
     }
