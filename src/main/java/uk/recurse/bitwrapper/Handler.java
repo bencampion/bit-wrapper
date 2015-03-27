@@ -13,8 +13,6 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 class Handler extends AbstractInvocationHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
@@ -27,11 +25,16 @@ class Handler extends AbstractInvocationHandler {
     }
 
     @Override
-    protected Object handleInvocation(Object proxy, Method method, Object[] args)
-            throws Throwable {
-        ByteBuffer range = getSlice(proxy, method);
+    protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+        ByteBuffer slice = getSlice(proxy, method);
         Decoder<?> decoder = decoders.get(method.getReturnType());
-        return decoder.decode(range, method);
+        if (decoder != null) {
+            return decoder.decode(slice, method);
+        } else if (method.getReturnType().isInterface()) {
+            return new Wrapper<>(method.getReturnType(), decoders).wrap(slice);
+        } else {
+            throw new IllegalArgumentException(method.getReturnType() + " is not a supported type");
+        }
     }
 
     private ByteBuffer getSlice(Object proxy, AnnotatedElement method) {

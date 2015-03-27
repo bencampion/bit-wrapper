@@ -12,10 +12,12 @@ import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.nio.ByteBuffer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,6 +59,18 @@ public class HandlerTest {
         Object returned = handler.handleInvocation(proxy, method, new Object[]{});
 
         assertThat(returned, is((Object) 42));
+    }
+
+    @Test
+    public void handleInvocation_interfaceReturnType_returnsProxy() throws Throwable {
+        ByteBuffer buffer = ByteBuffer.allocate(0);
+        Method method = TestMethods.class.getMethod("returnsInterface");
+        when(slicer.byteSlice(7, 3)).thenReturn(buffer);
+        when(decoder.decode(buffer, method)).thenReturn(42);
+
+        Object returned = handler.handleInvocation(proxy, method, new Object[]{});
+
+        assertTrue(Proxy.isProxyClass(returned.getClass()));
     }
 
     @Test
@@ -115,6 +129,9 @@ public class HandlerTest {
 
         @Bits(offset = 7, length = 3)
         int bitAnnotated();
+
+        @Bytes(offset = 7, length = 3)
+        CharSequence returnsInterface();
 
         @Bytes(offsetExp = "offset()", lengthExp = "length()")
         int expressionAnnotated();
