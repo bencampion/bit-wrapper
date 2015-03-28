@@ -11,27 +11,26 @@ import uk.recurse.bitwrapper.decoder.Decoder;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 class Handler extends AbstractInvocationHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
     private final Slicer slicer;
-    private final Map<Class<?>, Decoder<?>> decoders;
+    private final Wrapper wrapper;
 
-    public Handler(Slicer slicer, Map<Class<?>, Decoder<?>> decoders) {
+    public Handler(Slicer slicer, Wrapper wrapper) {
         this.slicer = slicer;
-        this.decoders = decoders;
+        this.wrapper = wrapper;
     }
 
     @Override
     protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
         ByteBuffer slice = getSlice(proxy, method);
-        Decoder<?> decoder = decoders.get(method.getReturnType());
+        Decoder<?> decoder = wrapper.getDecoder(method.getReturnType());
         if (decoder != null) {
             return decoder.decode(slice, method);
         } else if (method.getReturnType().isInterface()) {
-            return new Wrapper<>(method.getReturnType(), decoders).wrap(slice);
+            return wrapper.wrap(slice, method.getReturnType());
         } else {
             throw new IllegalArgumentException(method.getReturnType() + " is not a supported type");
         }

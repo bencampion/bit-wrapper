@@ -1,9 +1,9 @@
 package uk.recurse.bitwrapper;
 
-import com.google.common.collect.ImmutableMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.expression.ExpressionException;
@@ -12,12 +12,12 @@ import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.nio.ByteBuffer;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -28,13 +28,15 @@ public class HandlerTest {
     @Mock
     private Slicer slicer;
     @Mock
+    private Wrapper wrapper;
+    @Mock
     private Decoder<Integer> decoder;
-
+    @InjectMocks
     private Handler handler;
 
     @Before
     public void setup() {
-        handler = new Handler(slicer, ImmutableMap.<Class<?>, Decoder<?>>of(int.class, decoder));
+        when(wrapper.getDecoder(int.class)).thenReturn(decoder);
     }
 
     @Test
@@ -62,15 +64,17 @@ public class HandlerTest {
     }
 
     @Test
-    public void handleInvocation_interfaceReturnType_returnsProxy() throws Throwable {
+    public void handleInvocation_interfaceReturnType_returnsView() throws Throwable {
+        CharSequence view = mock(CharSequence.class);
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("returnsInterface");
         when(slicer.byteSlice(7, 3)).thenReturn(buffer);
         when(decoder.decode(buffer, method)).thenReturn(42);
+        when(wrapper.wrap(buffer, CharSequence.class)).thenReturn(view);
 
-        Object returned = handler.handleInvocation(proxy, method, new Object[]{});
+        Object returned = handler.handleInvocation(view, method, new Object[]{});
 
-        assertTrue(Proxy.isProxyClass(returned.getClass()));
+        assertThat(returned, sameInstance((Object) view));
     }
 
     @Test
@@ -122,6 +126,7 @@ public class HandlerTest {
         handler.handleInvocation(proxy, method, new Object[]{});
     }
 
+    @SuppressWarnings("unused")
     private interface TestMethods {
 
         @Bytes(offset = 7, length = 3)

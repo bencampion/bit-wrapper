@@ -6,50 +6,50 @@ import uk.recurse.bitwrapper.decoder.Decoder;
 import java.lang.reflect.AnnotatedElement;
 import java.nio.ByteBuffer;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static uk.recurse.bitwrapper.Wrapper.Builder.DEFAULT_DECODERS;
 
 public class WrapperTest {
 
+    private final Wrapper wrapper = Wrapper.create();
+
     @Test(expected = NullPointerException.class)
     public void wrapArray_nullArray_throwsException() {
-        Wrapper.forView(CharSequence.class).wrap((byte[]) null);
+        wrapper.wrap((byte[]) null, CharSequence.class);
     }
 
     @Test(expected = NullPointerException.class)
     public void wrapBuffer_nullBuffer_throwsException() {
-        Wrapper.forView(CharSequence.class).wrap((ByteBuffer) null);
+        wrapper.wrap((ByteBuffer) null, CharSequence.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void wrapBuffer_wrapConcreteClass_throwsException() {
+        wrapper.wrap(ByteBuffer.allocate(0), String.class);
     }
 
     @Test
-    public void builder_addDecoder_addsToMapWithReturnTypeAsKey() {
-        Decoder<?> decoder = new Decoder<Object>() {
+    public void builder_addDecoder_addsDecoderToWrapper() {
+        Decoder<Object> decoder = new Decoder<Object>() {
             @Override
             public Object decode(ByteBuffer buffer, AnnotatedElement method) {
                 return null;
             }
         };
-        Wrapper.Builder builder = Wrapper.builder().addDecoder(decoder);
-        assertTrue(builder.decoders.containsKey(Object.class));
-        assertTrue(builder.decoders.containsValue(decoder));
+        Wrapper wrapper = Wrapper.builder().addDecoder(decoder).build();
+        assertThat(wrapper.getDecoder(Object.class), sameInstance(decoder));
     }
 
     @Test
-    public void builder_buildWithNoDecoders_addsDefaultsToMap() {
-        Wrapper.Builder builder = Wrapper.builder();
-        assertTrue(builder.decoders.values().containsAll(DEFAULT_DECODERS));
-    }
-
-    @Test
-    public void builder_buildWithNoDecoders_decodersSizeDefaultsPlus8Primitives() {
-        Wrapper.Builder builder = Wrapper.builder();
-        assertThat(builder.decoders.entrySet().size(), is(DEFAULT_DECODERS.size() + 8));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void builder_buildWithConcreteClass_throwsException() {
-        Wrapper.builder().build(String.class);
+    public void builder_addPrimitiveDecoder_addsDecoderToWrapperForPrimitiveAndWrappedTypes() {
+        Decoder<Integer> decoder = new Decoder<Integer>() {
+            @Override
+            public Integer decode(ByteBuffer buffer, AnnotatedElement method) {
+                return null;
+            }
+        };
+        Wrapper wrapper = Wrapper.builder().addDecoder(decoder).build();
+        assertThat(wrapper.getDecoder(Integer.class), sameInstance(decoder));
+        assertThat(wrapper.getDecoder(int.class), sameInstance(decoder));
     }
 }

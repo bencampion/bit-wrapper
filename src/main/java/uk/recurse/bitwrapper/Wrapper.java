@@ -14,30 +14,33 @@ import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
-public class Wrapper<T> {
+public class Wrapper {
 
-    private final Class<T> view;
     private final Map<Class<?>, Decoder<?>> decoders;
 
-    public Wrapper(Class<T> view, Map<Class<?>, Decoder<?>> decoders) {
-        this.view = view;
+    private Wrapper(Map<Class<?>, Decoder<?>> decoders) {
         this.decoders = decoders;
     }
 
-    public T wrap(ByteBuffer buffer) {
+    public <T> T wrap(ByteBuffer buffer, Class<T> view) {
         checkNotNull(buffer);
-        Handler handler = new Handler(new Slicer(buffer), decoders);
+        checkArgument(view.isInterface(), view + " is not an interface");
+        Handler handler = new Handler(new Slicer(buffer), this);
         return Reflection.newProxy(view, handler);
     }
 
-    public T wrap(byte[] bytes) {
-        return wrap(ByteBuffer.wrap(bytes));
+    public <T> T wrap(byte[] bytes, Class<T> view) {
+        return wrap(ByteBuffer.wrap(bytes), view);
     }
 
-    public static <T> Wrapper<T> forView(Class<T> view) {
-        return new Builder().build(view);
+    @SuppressWarnings("unchecked")
+    <T> Decoder<T> getDecoder(Class<T> type) {
+        return (Decoder<T>) decoders.get(type);
+    }
+
+    public static Wrapper create() {
+        return new Builder().build();
     }
 
     public static Builder builder() {
@@ -46,12 +49,12 @@ public class Wrapper<T> {
 
     public static class Builder {
 
-        static final List<Decoder<?>> DEFAULT_DECODERS = ImmutableList
+        private static final List<Decoder<?>> DEFAULT_DECODERS = ImmutableList
                 .<Decoder<?>>builder()
                 .add(new BooleanDecoder())
+                .add(new CharacterDecoder())
                 .add(new ByteBufferDecoder())
                 .add(new ByteDecoder())
-                .add(new CharacterDecoder())
                 .add(new DoubleDecoder())
                 .add(new FloatDecoder())
                 .add(new InetAddressDecoder())
@@ -60,7 +63,7 @@ public class Wrapper<T> {
                 .add(new ShortDecoder())
                 .build();
 
-        final Map<Class<?>, Decoder<?>> decoders;
+        private final Map<Class<?>, Decoder<?>> decoders;
 
         private Builder() {
             decoders = new HashMap<>();
@@ -90,9 +93,8 @@ public class Wrapper<T> {
             }
         }
 
-        public <T> Wrapper<T> build(Class<T> view) {
-            checkArgument(view.isInterface(), view + " is not an interface");
-            return new Wrapper<>(view, ImmutableMap.copyOf(decoders));
+        public Wrapper build() {
+            return new Wrapper(ImmutableMap.copyOf(decoders));
         }
     }
 }
