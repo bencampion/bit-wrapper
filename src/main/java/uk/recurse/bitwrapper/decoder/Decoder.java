@@ -1,9 +1,11 @@
 package uk.recurse.bitwrapper.decoder;
 
-import java.lang.reflect.AnnotatedElement;
+import uk.recurse.bitwrapper.Wrapper;
+
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 public interface Decoder<T> {
 
-    T decode(ByteBuffer buffer, AnnotatedElement method);
+    T decode(ByteBuffer buffer, Method method, Wrapper wrapper);
 }

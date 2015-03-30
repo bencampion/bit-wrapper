@@ -13,18 +13,18 @@ public class ByteDecoderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_emptyBuffer_throwsException() {
-        decoder.decode(ByteBuffer.allocate(0), null);
+        decoder.decode(ByteBuffer.allocate(0), null, null);
     }
 
     @Test
     public void decode_bufferSize1_returnsByte() {
         byte[] bytes = {Byte.MAX_VALUE};
-        Byte i = decoder.decode(ByteBuffer.wrap(bytes), null);
+        Byte i = decoder.decode(ByteBuffer.wrap(bytes), null, null);
         assertThat(i, is(Byte.MAX_VALUE));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_bufferSize2_throwsException() {
-        decoder.decode(ByteBuffer.allocate(2), null);
+        decoder.decode(ByteBuffer.allocate(2), null, null);
     }
 }

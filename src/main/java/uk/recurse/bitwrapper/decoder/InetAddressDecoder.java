@@ -1,6 +1,8 @@
 package uk.recurse.bitwrapper.decoder;
 
-import java.lang.reflect.AnnotatedElement;
+import uk.recurse.bitwrapper.Wrapper;
+
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -8,7 +10,7 @@ import java.nio.ByteBuffer;
 public class InetAddressDecoder implements Decoder<InetAddress> {
 
     @Override
-    public InetAddress decode(ByteBuffer buffer, AnnotatedElement method) {
+    public InetAddress decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
         byte[] addr = new byte[buffer.limit()];
         buffer.get(addr);
         try {

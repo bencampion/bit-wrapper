@@ -28,7 +28,7 @@ class Handler extends AbstractInvocationHandler {
         ByteBuffer slice = getSlice(proxy, method);
         Decoder<?> decoder = wrapper.getDecoder(method.getReturnType());
         if (decoder != null) {
-            return decoder.decode(slice, method);
+            return decoder.decode(slice, method, wrapper);
         } else if (method.getReturnType().isInterface()) {
             return wrapper.wrap(slice, method.getReturnType());
         } else {

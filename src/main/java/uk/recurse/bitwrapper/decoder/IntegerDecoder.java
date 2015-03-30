@@ -1,6 +1,8 @@
 package uk.recurse.bitwrapper.decoder;
 
-import java.lang.reflect.AnnotatedElement;
+import uk.recurse.bitwrapper.Wrapper;
+
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -9,7 +11,7 @@ import static java.nio.ByteOrder.BIG_ENDIAN;
 public class IntegerDecoder implements Decoder<Integer> {
 
     @Override
-    public Integer decode(ByteBuffer buffer, AnnotatedElement method) {
+    public Integer decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
         checkArgument(buffer.limit() >= 1 && buffer.limit() <= 4,
                 "Integer length must be >= 1 and <= 4");
         boolean bigEndian = buffer.order().equals(BIG_ENDIAN);

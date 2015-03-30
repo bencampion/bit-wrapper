@@ -14,20 +14,20 @@ public class ShortDecoderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_emptyBuffer_throwsException() {
-        decoder.decode(ByteBuffer.allocate(0), null);
+        decoder.decode(ByteBuffer.allocate(0), null, null);
     }
 
     @Test
     public void decode_bufferSize1_returnsByte() {
         byte[] bytes = {-1};
-        Short i = decoder.decode(ByteBuffer.wrap(bytes), null);
+        Short i = decoder.decode(ByteBuffer.wrap(bytes), null, null);
         assertThat(i, is((short) 255));
     }
 
     @Test
     public void decode_bufferSize2_returnsAllBytes() {
         byte[] bytes = {Byte.MIN_VALUE, 0};
-        Short i = decoder.decode(ByteBuffer.wrap(bytes), null);
+        Short i = decoder.decode(ByteBuffer.wrap(bytes), null, null);
         assertThat(i, is(Short.MIN_VALUE));
     }
 
@@ -35,12 +35,12 @@ public class ShortDecoderTest {
     public void decode_littleEndianBuffer_returnsBytesInCorrectOrder() {
         byte[] bytes = {0, Byte.MIN_VALUE};
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(LITTLE_ENDIAN);
-        Short i = decoder.decode(buffer, null);
+        Short i = decoder.decode(buffer, null, null);
         assertThat(i, is(Short.MIN_VALUE));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_bufferSize3_throwsException() {
-        decoder.decode(ByteBuffer.allocate(3), null);
+        decoder.decode(ByteBuffer.allocate(3), null, null);
     }
 }

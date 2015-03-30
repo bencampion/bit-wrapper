@@ -16,7 +16,7 @@ public class ByteBufferDecoderTest {
     @Test
     public void decode_buffer_returnsSameInstance() {
         ByteBuffer buffer = ByteBuffer.allocate(0);
-        ByteBuffer decoded = decoder.decode(buffer, null);
+        ByteBuffer decoded = decoder.decode(buffer, null, null);
         assertThat(decoded, sameInstance(buffer));
     }
 }

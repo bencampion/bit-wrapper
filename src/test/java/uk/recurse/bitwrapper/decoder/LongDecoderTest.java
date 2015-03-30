@@ -14,20 +14,20 @@ public class LongDecoderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_emptyBuffer_throwsException() {
-        decoder.decode(ByteBuffer.allocate(0), null);
+        decoder.decode(ByteBuffer.allocate(0), null, null);
     }
 
     @Test
     public void decode_bufferSize1_returnsByte() {
         byte[] bytes = {-1};
-        Long i = decoder.decode(ByteBuffer.wrap(bytes), null);
+        Long i = decoder.decode(ByteBuffer.wrap(bytes), null, null);
         assertThat(i, is(255l));
     }
 
     @Test
     public void decode_bufferSize8_returnsAllBytes() {
         byte[] bytes = {Byte.MIN_VALUE, 0, 0, 0, 0, 0, 0, 0};
-        Long i = decoder.decode(ByteBuffer.wrap(bytes), null);
+        Long i = decoder.decode(ByteBuffer.wrap(bytes), null, null);
         assertThat(i, is(Long.MIN_VALUE));
     }
 
@@ -35,12 +35,12 @@ public class LongDecoderTest {
     public void decode_littleEndianBuffer_returnsBytesInCorrectOrder() {
         byte[] bytes = {0, 0, 0, 0, 0, 0, 0, Byte.MIN_VALUE};
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(LITTLE_ENDIAN);
-        Long i = decoder.decode(buffer, null);
+        Long i = decoder.decode(buffer, null, null);
         assertThat(i, is(Long.MIN_VALUE));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_bufferSize9_throwsException() {
-        decoder.decode(ByteBuffer.allocate(9), null);
+        decoder.decode(ByteBuffer.allocate(9), null, null);
     }
 }

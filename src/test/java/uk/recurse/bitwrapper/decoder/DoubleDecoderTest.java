@@ -16,14 +16,14 @@ public class DoubleDecoderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_bufferSize7_throwsException() {
-        decoder.decode(ByteBuffer.allocate(7), null);
+        decoder.decode(ByteBuffer.allocate(7), null, null);
     }
 
     @Test
     public void decode_bufferSize8_returnsBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(8);
         buffer.putDouble(0, Math.PI);
-        Double f = decoder.decode(buffer, null);
+        Double f = decoder.decode(buffer, null, null);
         assertThat(f, is(Math.PI));
     }
 
@@ -32,12 +32,12 @@ public class DoubleDecoderTest {
         ByteBuffer buffer = ByteBuffer.allocate(8);
         buffer.putDouble(0, Math.PI);
         Collections.reverse(Bytes.asList(buffer.array()));
-        Double f = decoder.decode(buffer.order(LITTLE_ENDIAN), null);
+        Double f = decoder.decode(buffer.order(LITTLE_ENDIAN), null, null);
         assertThat(f, is(Math.PI));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void decode_bufferSize9_throwsException() {
-        decoder.decode(ByteBuffer.allocate(9), null);
+        decoder.decode(ByteBuffer.allocate(9), null, null);
     }
 }

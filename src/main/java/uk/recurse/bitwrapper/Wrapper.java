@@ -6,7 +6,7 @@ import com.google.common.primitives.Primitives;
 import com.google.common.reflect.Reflection;
 import uk.recurse.bitwrapper.decoder.*;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +86,7 @@ public class Wrapper {
 
         private Class<?> getReturnType(Decoder<?> decoder) {
             try {
-                Class<?>[] params = {ByteBuffer.class, AnnotatedElement.class};
+                Class<?>[] params = {ByteBuffer.class, Method.class, Wrapper.class};
                 return decoder.getClass().getMethod("decode", params).getReturnType();
             } catch (NoSuchMethodException e) {
                 throw new AssertionError("decode(...) should always exist");

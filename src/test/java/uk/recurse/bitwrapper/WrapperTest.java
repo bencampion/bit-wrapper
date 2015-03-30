@@ -3,7 +3,7 @@ package uk.recurse.bitwrapper;
 import org.junit.Test;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
-import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -32,7 +32,7 @@ public class WrapperTest {
     public void builder_addDecoder_addsDecoderToWrapper() {
         Decoder<Object> decoder = new Decoder<Object>() {
             @Override
-            public Object decode(ByteBuffer buffer, AnnotatedElement method) {
+            public Object decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
                 return null;
             }
         };
@@ -44,7 +44,7 @@ public class WrapperTest {
     public void builder_addPrimitiveDecoder_addsDecoderToWrapperForPrimitiveAndWrappedTypes() {
         Decoder<Integer> decoder = new Decoder<Integer>() {
             @Override
-            public Integer decode(ByteBuffer buffer, AnnotatedElement method) {
+            public Integer decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
                 return null;
             }
         };

@@ -44,7 +44,7 @@ public class HandlerTest {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("byteAnnotated");
         when(slicer.byteSlice(7, 3)).thenReturn(buffer);
-        when(decoder.decode(buffer, method)).thenReturn(42);
+        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
 
         Object returned = handler.handleInvocation(proxy, method, new Object[]{});
 
@@ -56,7 +56,7 @@ public class HandlerTest {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("bitAnnotated");
         when(slicer.bitSlice(7, 3)).thenReturn(buffer);
-        when(decoder.decode(buffer, method)).thenReturn(42);
+        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
 
         Object returned = handler.handleInvocation(proxy, method, new Object[]{});
 
@@ -69,7 +69,7 @@ public class HandlerTest {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("returnsInterface");
         when(slicer.byteSlice(7, 3)).thenReturn(buffer);
-        when(decoder.decode(buffer, method)).thenReturn(42);
+        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
         when(wrapper.wrap(buffer, CharSequence.class)).thenReturn(view);
 
         Object returned = handler.handleInvocation(view, method, new Object[]{});
@@ -84,7 +84,7 @@ public class HandlerTest {
         when(proxy.offset()).thenReturn(5);
         when(proxy.length()).thenReturn(11);
         when(slicer.byteSlice(5, 11)).thenReturn(buffer);
-        when(decoder.decode(buffer, method)).thenReturn(42);
+        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
 
         Object returned = handler.handleInvocation(proxy, method, new Object[]{});
 

@@ -1,6 +1,8 @@
 package uk.recurse.bitwrapper.decoder;
 
-import java.lang.reflect.AnnotatedElement;
+import uk.recurse.bitwrapper.Wrapper;
+
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -8,7 +10,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class ByteBufferDecoder implements Decoder<ByteBuffer> {
 
     @Override
-    public ByteBuffer decode(ByteBuffer buffer, AnnotatedElement method) {
+    public ByteBuffer decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
         return buffer;
     }
 }
