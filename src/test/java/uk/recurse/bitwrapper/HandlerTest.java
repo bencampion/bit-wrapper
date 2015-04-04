@@ -6,10 +6,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.expression.ExpressionException;
 import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
+import uk.recurse.bitwrapper.exception.BadExpressionException;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
@@ -93,28 +93,28 @@ public class HandlerTest {
         assertThat(returned, is((Object) 42));
     }
 
-    @Test(expected = ExpressionException.class)
+    @Test(expected = BadExpressionException.class)
     public void handleInvocation_badSyntaxOffsetExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badSyntaxOffsetExpression");
 
         handler.handleInvocation(proxy, method, new Object[]{});
     }
 
-    @Test(expected = ExpressionException.class)
+    @Test(expected = BadExpressionException.class)
     public void handleInvocation_badTypeOffsetExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badTypeOffsetExpression");
 
         handler.handleInvocation(proxy, method, new Object[]{});
     }
 
-    @Test(expected = ExpressionException.class)
+    @Test(expected = BadExpressionException.class)
     public void handleInvocation_badSyntaxLengthExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badSyntaxLengthExpression");
 
         handler.handleInvocation(proxy, method, new Object[]{});
     }
 
-    @Test(expected = ExpressionException.class)
+    @Test(expected = BadExpressionException.class)
     public void handleInvocation_badTypeLengthExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badTypeLengthExpression");
 

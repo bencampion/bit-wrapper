@@ -2,11 +2,13 @@ package uk.recurse.bitwrapper;
 
 import com.google.common.reflect.AbstractInvocationHandler;
 import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionException;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
+import uk.recurse.bitwrapper.exception.BadExpressionException;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
@@ -66,7 +68,11 @@ class Handler extends AbstractInvocationHandler {
     }
 
     private int eval(String expression, Object root) {
-        Expression exp = parser.parseExpression(expression);
-        return exp.getValue(root, Integer.class);
+        try {
+            Expression exp = parser.parseExpression(expression);
+            return exp.getValue(root, Integer.class);
+        } catch (ExpressionException e) {
+            throw new BadExpressionException(e);
+        }
     }
 }
