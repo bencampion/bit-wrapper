@@ -11,6 +11,7 @@ import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
+import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -127,6 +128,13 @@ public class HandlerTest {
         handler.handleInvocation(proxy, method, new Object[]{});
     }
 
+    @Test(expected = UnsupportedTypeException.class)
+    public void handleInvocation_unsupportedType_throwsException() throws Throwable {
+        Method method = TestMethods.class.getMethod("returnsUnsupportedType");
+
+        handler.handleInvocation(proxy, method, new Object[]{});
+    }
+
     @SuppressWarnings("unused")
     private interface TestMethods {
 
@@ -138,6 +146,9 @@ public class HandlerTest {
 
         @Bytes(offset = 7, length = 3)
         CharSequence returnsInterface();
+
+        @Bits(offset = 5, length = 1)
+        Thread returnsUnsupportedType();
 
         @Bytes(offsetExp = "offset()", lengthExp = "length()")
         int expressionAnnotated();

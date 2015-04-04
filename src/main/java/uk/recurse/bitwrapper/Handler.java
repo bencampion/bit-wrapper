@@ -8,6 +8,7 @@ import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
+import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -33,7 +34,7 @@ class Handler extends AbstractInvocationHandler {
         } else if (method.getReturnType().isInterface()) {
             return wrapper.wrap(slice, method.getReturnType());
         } else {
-            throw new IllegalArgumentException(method.getReturnType() + " is not a supported type");
+            throw new UnsupportedTypeException(method.getReturnType());
         }
     }
 
