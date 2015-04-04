@@ -7,6 +7,7 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
+import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -42,7 +43,7 @@ class Handler extends AbstractInvocationHandler {
         } else if (method.isAnnotationPresent(Bits.class)) {
             return getBitSlice(method);
         }
-        throw new IllegalArgumentException("method must be annotated with @Bytes or @Bits");
+        throw new MissingAnnotationException(Bytes.class, Bits.class);
     }
 
     private ByteBuffer getByteSlice(Object proxy, AnnotatedElement method) {

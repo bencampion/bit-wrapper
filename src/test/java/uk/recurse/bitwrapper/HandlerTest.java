@@ -10,6 +10,7 @@ import org.springframework.expression.ExpressionException;
 import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
 import uk.recurse.bitwrapper.decoder.Decoder;
+import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -119,7 +120,7 @@ public class HandlerTest {
         handler.handleInvocation(proxy, method, new Object[]{});
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = MissingAnnotationException.class)
     public void handleInvocation_noAnnotations_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("length");
 
