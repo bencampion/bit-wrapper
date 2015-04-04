@@ -61,6 +61,7 @@ public class Wrapper {
                 .add(new IntegerDecoder())
                 .add(new LongDecoder())
                 .add(new ShortDecoder())
+                .add(new StringDecoder())
                 .build();
 
         private final Map<Class<?>, Decoder<?>> decoders;
