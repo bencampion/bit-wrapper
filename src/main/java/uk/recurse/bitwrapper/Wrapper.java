@@ -1,15 +1,14 @@
 package uk.recurse.bitwrapper;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import com.google.common.reflect.Reflection;
-import uk.recurse.bitwrapper.decoder.*;
+import org.reflections.Reflections;
+import uk.recurse.bitwrapper.decoder.Decoder;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -49,33 +48,22 @@ public class Wrapper {
 
     public static class Builder {
 
-        private static final List<Decoder<?>> DEFAULT_DECODERS = ImmutableList
-                .<Decoder<?>>builder()
-                .add(new BooleanDecoder())
-                .add(new CharacterDecoder())
-                .add(new ByteBufferDecoder())
-                .add(new ByteDecoder())
-                .add(new DoubleDecoder())
-                .add(new FloatDecoder())
-                .add(new InetAddressDecoder())
-                .add(new IntegerDecoder())
-                .add(new LongDecoder())
-                .add(new ShortDecoder())
-                .add(new StringDecoder())
-                .build();
-
         private final Map<Class<?>, Decoder<?>> decoders;
 
         private Builder() {
             decoders = new HashMap<>();
-            addDecoders(DEFAULT_DECODERS);
+            addDefaultDecoders();
         }
 
-        public Builder addDecoders(Iterable<Decoder<?>> decoders) {
-            for (Decoder<?> decoder : decoders) {
-                addDecoder(decoder);
+        private void addDefaultDecoders() {
+            Reflections reflections = new Reflections("uk.recurse.bitwrapper.decoder");
+            for (Class<? extends Decoder> decoder : reflections.getSubTypesOf(Decoder.class)) {
+                try {
+                    addDecoder(decoder.newInstance());
+                } catch (ReflectiveOperationException e) {
+                    throw new IllegalStateException(e);
+                }
             }
-            return this;
         }
 
         public Builder addDecoder(Decoder<?> decoder) {
