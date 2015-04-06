@@ -56,9 +56,20 @@ public class SlicerTest {
         assertThat(slice, is(ByteBuffer.wrap(expected)));
     }
 
+    @Test
+    public void byteSlice_offset5Length0_returnsEmptyBuffer() {
+        ByteBuffer slice = slicer.byteSlice(5, 0);
+        assertThat(slice, is(ByteBuffer.allocate(0)));
+    }
+
     @Test(expected = IndexOutOfBoundsException.class)
-    public void byteSlice_offset5Length0_throwsException() {
-        slicer.byteSlice(5, 0);
+    public void byteSlice_offset5Length1_throwsException() {
+        slicer.byteSlice(5, 1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void byteSlice_offset6Length0_throwsException() {
+        slicer.byteSlice(6, 0);
     }
 
     @Test
@@ -142,14 +153,32 @@ public class SlicerTest {
     }
 
     @Test
-    public void bitSlice_offset32Length1_returnsZero() {
-        ByteBuffer slice = slicer.bitSlice(32, 1);
+    public void bitSlice_offset32Length8_returnsZero() {
+        ByteBuffer slice = slicer.bitSlice(32, 8);
         byte[] expected = {0};
         assertThat(slice, is(ByteBuffer.wrap(expected)));
     }
 
+    @Test
+    public void bitSlice_offset39Length1_returnsZero() {
+        ByteBuffer slice = slicer.bitSlice(39, 1);
+        byte[] expected = {0};
+        assertThat(slice, is(ByteBuffer.wrap(expected)));
+    }
+
+    @Test
+    public void bitSlice_offset40Length0_returnsEmptyBuffer() {
+        ByteBuffer slice = slicer.bitSlice(40, 0);
+        assertThat(slice, is(ByteBuffer.allocate(0)));
+    }
+
     @Test(expected = IndexOutOfBoundsException.class)
-    public void bitSlice_offset40Length0_throwsException() {
-        slicer.bitSlice(40, 0);
+    public void bitSlice_offset40Length1_throwsException() {
+        slicer.bitSlice(40, 1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void bitSlice_offset41Length0_throwsException() {
+        slicer.bitSlice(41, 0);
     }
 }

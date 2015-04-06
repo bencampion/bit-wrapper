@@ -14,13 +14,12 @@ class Slicer {
         checkLimit(offset, length);
         ByteBuffer copy = buffer.duplicate();
         copy.position(offset);
-        ByteBuffer slice = copy.slice();
-        slice.limit(length);
-        return slice;
+        copy.limit(offset + length);
+        return copy.slice();
     }
 
     public ByteBuffer bitSlice(int offset, int length) {
-        checkLimit(offset / 8, length / 8);
+        checkLimit((int) Math.ceil(offset / 8d), length / 8);
         byte[] bytes = new byte[(length + 7) / 8];
         int end = (offset + length - 1) / 8;
         int shift = (8 - (length + offset) % 8) % 8;
@@ -37,7 +36,7 @@ class Slicer {
     }
 
     private void checkLimit(int offset, int length) {
-        if (offset >= buffer.limit() || offset + length > buffer.limit()) {
+        if (offset > buffer.limit() || offset + length > buffer.limit()) {
             throw new IndexOutOfBoundsException();
         }
     }
