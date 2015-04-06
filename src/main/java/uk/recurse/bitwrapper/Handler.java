@@ -1,6 +1,5 @@
 package uk.recurse.bitwrapper;
 
-import com.google.common.reflect.AbstractInvocationHandler;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionException;
 import org.springframework.expression.ExpressionParser;
@@ -13,10 +12,11 @@ import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
-class Handler extends AbstractInvocationHandler {
+class Handler implements InvocationHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
     private final Slicer slicer;
@@ -28,7 +28,7 @@ class Handler extends AbstractInvocationHandler {
     }
 
     @Override
-    protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         ByteBuffer slice = getSlice(proxy, method);
         Decoder<?> decoder = wrapper.getDecoder(method.getReturnType());
         if (decoder != null) {
