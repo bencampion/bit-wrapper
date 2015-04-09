@@ -1,10 +1,9 @@
 package uk.recurse.bitwrapper.exception;
 
-import com.google.common.base.Joiner;
-
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+
+import static java.util.stream.Collectors.joining;
 
 public class MissingAnnotationException extends RuntimeException {
 
@@ -17,10 +16,8 @@ public class MissingAnnotationException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        List<String> names = new ArrayList<>(annotations.length);
-        for (Class<? extends Annotation> annotation : annotations) {
-            names.add("@" + annotation.getSimpleName());
-        }
-        return Joiner.on(" or ").join(names);
+        return Arrays.stream(annotations)
+                .map(a -> "@" + a.getSimpleName())
+                .collect(joining(" or "));
     }
 }

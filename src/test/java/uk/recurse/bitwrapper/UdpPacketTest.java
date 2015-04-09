@@ -41,6 +41,11 @@ public class UdpPacketTest {
     }
 
     @Test
+    public void info() {
+        assertThat(udp.info(), is("src:42 dest:94"));
+    }
+
+    @Test
     public void payload() {
         ByteBuffer payload = ByteBuffer.wrap(new byte[]{-1});
         assertThat(udp.payload(), is(payload));
@@ -58,7 +63,7 @@ public class UdpPacketTest {
         assertThat(udp.payload().get(0), is((byte) 42));
     }
 
-    private interface UdpPacket {
+    public interface UdpPacket {
 
         @Bytes(offset = 0, length = 2)
         int sourcePort();
@@ -74,5 +79,9 @@ public class UdpPacketTest {
 
         @Bytes(offset = 8, lengthExp = "length() - 8")
         ByteBuffer payload();
+
+        default String info() {
+            return String.format("src:%d dest:%d", sourcePort(), destinationPort());
+        }
     }
 }

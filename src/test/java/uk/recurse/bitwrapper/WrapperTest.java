@@ -3,7 +3,6 @@ package uk.recurse.bitwrapper;
 import org.junit.Test;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -30,25 +29,15 @@ public class WrapperTest {
 
     @Test
     public void builder_addDecoder_addsDecoderToWrapper() {
-        Decoder<Object> decoder = new Decoder<Object>() {
-            @Override
-            public Object decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
-                return null;
-            }
-        };
-        Wrapper wrapper = Wrapper.builder().addDecoder(decoder).build();
+        Decoder<Object> decoder = (buffer, method, wrapper) -> new Object();
+        Wrapper wrapper = Wrapper.builder().addDecoder(Object.class, decoder).build();
         assertThat(wrapper.getDecoder(Object.class), sameInstance(decoder));
     }
 
     @Test
     public void builder_addPrimitiveDecoder_addsDecoderToWrapperForPrimitiveAndWrappedTypes() {
-        Decoder<Integer> decoder = new Decoder<Integer>() {
-            @Override
-            public Integer decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
-                return null;
-            }
-        };
-        Wrapper wrapper = Wrapper.builder().addDecoder(decoder).build();
+        Decoder<Integer> decoder = (buffer, method, wrapper) -> 0;
+        Wrapper wrapper = Wrapper.builder().addDecoder(Integer.class, decoder).build();
         assertThat(wrapper.getDecoder(Integer.class), sameInstance(decoder));
         assertThat(wrapper.getDecoder(int.class), sameInstance(decoder));
     }

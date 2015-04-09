@@ -135,8 +135,17 @@ public class HandlerTest {
         handler.invoke(proxy, method, new Object[]{});
     }
 
+    @Test
+    public void invoke_defaultMethod_invokesDefaultMethod() throws Throwable {
+        Method method = TestMethods.class.getMethod("defaultMethod");
+
+        Object returnValue = handler.invoke(proxy, method, new Object[]{});
+
+        assertThat(returnValue, is("foobar"));
+    }
+
     @SuppressWarnings("unused")
-    private interface TestMethods {
+    public interface TestMethods {
 
         @Bytes(offset = 7, length = 3)
         int byteAnnotated();
@@ -168,5 +177,9 @@ public class HandlerTest {
         int offset();
 
         int length();
+
+        default String defaultMethod() {
+            return "foobar";
+        }
     }
 }

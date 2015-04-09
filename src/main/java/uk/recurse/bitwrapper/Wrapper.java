@@ -56,31 +56,24 @@ public class Wrapper {
             addDefaultDecoders();
         }
 
+        @SuppressWarnings("unchecked")
         private void addDefaultDecoders() {
             Reflections reflections = new Reflections("uk.recurse.bitwrapper.decoder");
-            for (Class<? extends Decoder> decoder : reflections.getSubTypesOf(Decoder.class)) {
+            reflections.getSubTypesOf(Decoder.class).forEach(decoder -> {
                 try {
-                    addDecoder(decoder.newInstance());
+                    Class<?>[] params = {ByteBuffer.class, Method.class, Wrapper.class};
+                    Class<?> type = decoder.getMethod("decode", params).getReturnType();
+                    addDecoder(type, decoder.newInstance());
                 } catch (ReflectiveOperationException e) {
                     throw new IllegalStateException(e);
                 }
-            }
+            });
         }
 
-        public Builder addDecoder(Decoder<?> decoder) {
-            Class<?> returnType = getReturnType(decoder);
-            decoders.put(returnType, decoder);
-            decoders.put(Primitives.unwrap(returnType), decoder);
+        public <T> Builder addDecoder(Class<T> type, Decoder<T> decoder) {
+            decoders.put(type, decoder);
+            decoders.put(Primitives.unwrap(type), decoder);
             return this;
-        }
-
-        private Class<?> getReturnType(Decoder<?> decoder) {
-            try {
-                Class<?>[] params = {ByteBuffer.class, Method.class, Wrapper.class};
-                return decoder.getClass().getMethod("decode", params).getReturnType();
-            } catch (NoSuchMethodException e) {
-                throw new AssertionError("decode(...) should always exist");
-            }
         }
 
         public Wrapper build() {
