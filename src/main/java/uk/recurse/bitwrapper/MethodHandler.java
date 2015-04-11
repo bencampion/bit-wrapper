@@ -1,6 +1,5 @@
 package uk.recurse.bitwrapper;
 
-import javassist.util.proxy.MethodHandler;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionException;
 import org.springframework.expression.ExpressionParser;
@@ -16,19 +15,18 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
-class Handler implements MethodHandler {
+class MethodHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
     private final Slicer slicer;
     private final Wrapper wrapper;
 
-    public Handler(Slicer slicer, Wrapper wrapper) {
+    public MethodHandler(Slicer slicer, Wrapper wrapper) {
         this.slicer = slicer;
         this.wrapper = wrapper;
     }
 
-    @Override
-    public Object invoke(Object proxy, Method method, Method proceed, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method) {
         ByteBuffer slice = getSlice(proxy, method);
         Decoder<?> decoder = wrapper.getDecoder(method.getReturnType());
         if (decoder != null) {

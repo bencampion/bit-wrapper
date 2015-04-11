@@ -2,7 +2,6 @@ package uk.recurse.bitwrapper;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
-import javassist.util.proxy.ProxyFactory;
 import org.reflections.Reflections;
 import uk.recurse.bitwrapper.decoder.Decoder;
 
@@ -11,30 +10,22 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class Wrapper {
 
     private final Map<Class<?>, Decoder<?>> decoders;
+    private final ProxyFactory proxyFactory;
 
-    private Wrapper(Map<Class<?>, Decoder<?>> decoders) {
+    private Wrapper(Map<Class<?>, Decoder<?>> decoders, ProxyFactory proxyFactory) {
         this.decoders = decoders;
+        this.proxyFactory = proxyFactory;
     }
 
     public <T> T wrap(ByteBuffer buffer, Class<T> view) {
         checkNotNull(buffer);
-        checkArgument(view.isInterface(), view + " is not an interface");
-        Handler handler = new Handler(new Slicer(buffer), this);
-        ProxyFactory f = new ProxyFactory();
-        f.setInterfaces(new Class<?>[]{view});
-        f.setFilter(m -> !m.isDefault());
-        try {
-            Object proxy = f.create(new Class<?>[0], new Object[0], handler);
-            return view.cast(proxy);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
+        MethodHandler methodHandler = new MethodHandler(new Slicer(buffer), this);
+        return proxyFactory.create(methodHandler, view);
     }
 
     public <T> T wrap(byte[] bytes, Class<T> view) {
@@ -72,7 +63,7 @@ public class Wrapper {
                     Class<?> type = decoder.getMethod("decode", params).getReturnType();
                     addDecoder(type, decoder.newInstance());
                 } catch (ReflectiveOperationException e) {
-                    throw new IllegalStateException(e);
+                    throw new AssertionError(e);
                 }
             });
         }
@@ -84,7 +75,7 @@ public class Wrapper {
         }
 
         public Wrapper build() {
-            return new Wrapper(ImmutableMap.copyOf(decoders));
+            return new Wrapper(ImmutableMap.copyOf(decoders), new ProxyFactory());
         }
     }
 }
