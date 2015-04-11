@@ -1,5 +1,6 @@
 package uk.recurse.bitwrapper;
 
+import javassist.util.proxy.MethodHandler;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionException;
 import org.springframework.expression.ExpressionParser;
@@ -11,14 +12,11 @@ import uk.recurse.bitwrapper.exception.BadExpressionException;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
-class Handler implements InvocationHandler {
+class Handler implements MethodHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
     private final Slicer slicer;
@@ -30,10 +28,7 @@ class Handler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.isDefault()) {
-            return invokeDefault(proxy, method, args);
-        }
+    public Object invoke(Object proxy, Method method, Method proceed, Object[] args) throws Throwable {
         ByteBuffer slice = getSlice(proxy, method);
         Decoder<?> decoder = wrapper.getDecoder(method.getReturnType());
         if (decoder != null) {
@@ -43,16 +38,6 @@ class Handler implements InvocationHandler {
         } else {
             throw new UnsupportedTypeException(method.getReturnType());
         }
-    }
-
-    private Object invokeDefault(Object proxy, Method method, Object[] args) throws Throwable {
-        Class<?> declaringClass = method.getDeclaringClass();
-        Constructor<MethodHandles.Lookup> lookup = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
-        lookup.setAccessible(true);
-        return lookup.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE)
-                .unreflectSpecial(method, declaringClass)
-                .bindTo(proxy)
-                .invokeWithArguments(args);
     }
 
     private ByteBuffer getSlice(Object proxy, AnnotatedElement method) {

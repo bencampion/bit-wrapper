@@ -48,7 +48,7 @@ public class HandlerTest {
         when(slicer.byteSlice(7, 3)).thenReturn(buffer);
         when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
 
-        Object returned = handler.invoke(proxy, method, new Object[]{});
+        Object returned = handler.invoke(proxy, method, null, new Object[]{});
 
         assertThat(returned, is((Object) 42));
     }
@@ -60,7 +60,7 @@ public class HandlerTest {
         when(slicer.bitSlice(7, 3)).thenReturn(buffer);
         when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
 
-        Object returned = handler.invoke(proxy, method, new Object[]{});
+        Object returned = handler.invoke(proxy, method, null, new Object[]{});
 
         assertThat(returned, is((Object) 42));
     }
@@ -74,7 +74,7 @@ public class HandlerTest {
         when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
         when(wrapper.wrap(buffer, CharSequence.class)).thenReturn(view);
 
-        Object returned = handler.invoke(proxy, method, new Object[]{});
+        Object returned = handler.invoke(proxy, method, null, new Object[]{});
 
         assertThat(returned, sameInstance((Object) view));
     }
@@ -88,7 +88,7 @@ public class HandlerTest {
         when(slicer.byteSlice(5, 11)).thenReturn(buffer);
         when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
 
-        Object returned = handler.invoke(proxy, method, new Object[]{});
+        Object returned = handler.invoke(proxy, method, null, new Object[]{});
 
         assertThat(returned, is((Object) 42));
     }
@@ -97,51 +97,42 @@ public class HandlerTest {
     public void invoke_badSyntaxOffsetExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badSyntaxOffsetExpression");
 
-        handler.invoke(proxy, method, new Object[]{});
+        handler.invoke(proxy, method, null, new Object[]{});
     }
 
     @Test(expected = BadExpressionException.class)
     public void invoke_badTypeOffsetExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badTypeOffsetExpression");
 
-        handler.invoke(proxy, method, new Object[]{});
+        handler.invoke(proxy, method, null, new Object[]{});
     }
 
     @Test(expected = BadExpressionException.class)
     public void invoke_badSyntaxLengthExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badSyntaxLengthExpression");
 
-        handler.invoke(proxy, method, new Object[]{});
+        handler.invoke(proxy, method, null, new Object[]{});
     }
 
     @Test(expected = BadExpressionException.class)
     public void invoke_badTypeLengthExpressions_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("badTypeLengthExpression");
 
-        handler.invoke(proxy, method, new Object[]{});
+        handler.invoke(proxy, method, null, new Object[]{});
     }
 
     @Test(expected = MissingAnnotationException.class)
     public void invoke_noAnnotations_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("length");
 
-        handler.invoke(proxy, method, new Object[]{});
+        handler.invoke(proxy, method, null, new Object[]{});
     }
 
     @Test(expected = UnsupportedTypeException.class)
     public void invoke_unsupportedType_throwsException() throws Throwable {
         Method method = TestMethods.class.getMethod("returnsUnsupportedType");
 
-        handler.invoke(proxy, method, new Object[]{});
-    }
-
-    @Test
-    public void invoke_defaultMethod_invokesDefaultMethod() throws Throwable {
-        Method method = TestMethods.class.getMethod("defaultMethod");
-
-        Object returnValue = handler.invoke(proxy, method, new Object[]{});
-
-        assertThat(returnValue, is("foobar"));
+        handler.invoke(proxy, method, null, new Object[]{});
     }
 
     @SuppressWarnings("unused")
@@ -177,9 +168,5 @@ public class HandlerTest {
         int offset();
 
         int length();
-
-        default String defaultMethod() {
-            return "foobar";
-        }
     }
 }
