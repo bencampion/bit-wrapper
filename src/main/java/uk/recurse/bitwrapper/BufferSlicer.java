@@ -2,11 +2,11 @@ package uk.recurse.bitwrapper;
 
 import java.nio.ByteBuffer;
 
-class Slicer {
+class BufferSlicer {
 
     private final ByteBuffer buffer;
 
-    public Slicer(ByteBuffer buffer) {
+    public BufferSlicer(ByteBuffer buffer) {
         this.buffer = buffer;
     }
 

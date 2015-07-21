@@ -21,7 +21,7 @@ public class Wrapper {
     }
 
     public <T> T wrap(ByteBuffer buffer, Class<T> view) {
-        MethodHandler methodHandler = new MethodHandler(new Slicer(buffer.slice()), this);
+        MethodHandler methodHandler = new MethodHandler(new BufferSlicer(buffer.slice()), this);
         return proxyFactory.create(methodHandler, view);
     }
 

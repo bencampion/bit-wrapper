@@ -18,11 +18,11 @@ import java.nio.ByteBuffer;
 class MethodHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
-    private final Slicer slicer;
+    private final BufferSlicer bufferSlicer;
     private final Wrapper wrapper;
 
-    public MethodHandler(Slicer slicer, Wrapper wrapper) {
-        this.slicer = slicer;
+    public MethodHandler(BufferSlicer bufferSlicer, Wrapper wrapper) {
+        this.bufferSlicer = bufferSlicer;
         this.wrapper = wrapper;
     }
 
@@ -57,12 +57,12 @@ class MethodHandler {
         if (!bytes.lengthExp().isEmpty()) {
             length = eval(bytes.lengthExp(), proxy);
         }
-        return slicer.byteSlice(offset, length);
+        return bufferSlicer.byteSlice(offset, length);
     }
 
     private ByteBuffer getBitSlice(AnnotatedElement method) {
         Bits bits = method.getAnnotation(Bits.class);
-        return slicer.bitSlice(bits.offset(), bits.length());
+        return bufferSlicer.bitSlice(bits.offset(), bits.length());
     }
 
     private int eval(String expression, Object root) {
