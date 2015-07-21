@@ -10,8 +10,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class Wrapper {
 
     private final Map<Class<?>, Decoder<?>> decoders;
@@ -23,8 +21,7 @@ public class Wrapper {
     }
 
     public <T> T wrap(ByteBuffer buffer, Class<T> view) {
-        checkNotNull(buffer);
-        MethodHandler methodHandler = new MethodHandler(new Slicer(buffer), this);
+        MethodHandler methodHandler = new MethodHandler(new Slicer(buffer.slice()), this);
         return proxyFactory.create(methodHandler, view);
     }
 
