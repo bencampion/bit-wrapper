@@ -42,7 +42,7 @@ public class MethodHandlerTest {
     }
 
     @Test
-    public void invoke_byteAnnotated_returnsDecodedValue() throws NoSuchMethodException{
+    public void invoke_byteAnnotated_returnsDecodedValue() throws NoSuchMethodException {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("byteAnnotated");
         when(bufferSlicer.byteSlice(7, 3)).thenReturn(buffer);
@@ -54,7 +54,7 @@ public class MethodHandlerTest {
     }
 
     @Test
-    public void invoke_bitAnnotated_returnsDecodedValue() throws NoSuchMethodException{
+    public void invoke_bitAnnotated_returnsDecodedValue() throws NoSuchMethodException {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("bitAnnotated");
         when(bufferSlicer.bitSlice(7, 3)).thenReturn(buffer);
@@ -66,7 +66,7 @@ public class MethodHandlerTest {
     }
 
     @Test
-    public void invoke_interfaceReturnType_returnsView() throws NoSuchMethodException{
+    public void invoke_interfaceReturnType_returnsView() throws NoSuchMethodException {
         CharSequence view = mock(CharSequence.class);
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("returnsInterface");
@@ -80,7 +80,7 @@ public class MethodHandlerTest {
     }
 
     @Test
-    public void handleInvocation_expressionAnnotated_returnsDecodedValue() throws NoSuchMethodException{
+    public void handleInvocation_expressionAnnotated_returnsDecodedValue() throws NoSuchMethodException {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("expressionAnnotated");
         when(proxy.offset()).thenReturn(5);
@@ -94,42 +94,42 @@ public class MethodHandlerTest {
     }
 
     @Test(expected = BadExpressionException.class)
-    public void invoke_badSyntaxOffsetExpressions_throwsException() throws NoSuchMethodException{
+    public void invoke_badSyntaxOffsetExpressions_throwsException() throws NoSuchMethodException {
         Method method = TestMethods.class.getMethod("badSyntaxOffsetExpression");
 
         methodHandler.invoke(proxy, method);
     }
 
     @Test(expected = BadExpressionException.class)
-    public void invoke_badTypeOffsetExpressions_throwsException() throws NoSuchMethodException{
+    public void invoke_badTypeOffsetExpressions_throwsException() throws NoSuchMethodException {
         Method method = TestMethods.class.getMethod("badTypeOffsetExpression");
 
         methodHandler.invoke(proxy, method);
     }
 
     @Test(expected = BadExpressionException.class)
-    public void invoke_badSyntaxLengthExpressions_throwsException() throws NoSuchMethodException{
+    public void invoke_badSyntaxLengthExpressions_throwsException() throws NoSuchMethodException {
         Method method = TestMethods.class.getMethod("badSyntaxLengthExpression");
 
         methodHandler.invoke(proxy, method);
     }
 
     @Test(expected = BadExpressionException.class)
-    public void invoke_badTypeLengthExpressions_throwsException() throws NoSuchMethodException{
+    public void invoke_badTypeLengthExpressions_throwsException() throws NoSuchMethodException {
         Method method = TestMethods.class.getMethod("badTypeLengthExpression");
 
         methodHandler.invoke(proxy, method);
     }
 
     @Test(expected = MissingAnnotationException.class)
-    public void invoke_noAnnotations_throwsException() throws NoSuchMethodException{
+    public void invoke_noAnnotations_throwsException() throws NoSuchMethodException {
         Method method = TestMethods.class.getMethod("length");
 
         methodHandler.invoke(proxy, method);
     }
 
     @Test(expected = UnsupportedTypeException.class)
-    public void invoke_unsupportedType_throwsException() throws NoSuchMethodException{
+    public void invoke_unsupportedType_throwsException() throws NoSuchMethodException {
         Method method = TestMethods.class.getMethod("returnsUnsupportedType");
 
         methodHandler.invoke(proxy, method);
