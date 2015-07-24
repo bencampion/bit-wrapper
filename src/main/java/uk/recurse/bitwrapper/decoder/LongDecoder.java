@@ -6,8 +6,18 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.ByteOrder.BIG_ENDIAN;
 
+/**
+ * Long decoder function.
+ */
 public class LongDecoder implements Function<ByteBuffer, Long> {
 
+    /**
+     * Converts a ByteBuffer into a Long. If the buffer contains less than eight bytes then the bytes are treated as
+     * being the least significant bits of the Long. This method respects the endianness of the buffer.
+     *
+     * @return the decoded Long
+     * @throws IllegalArgumentException if the buffer does not contain between 1 and 8 bytes inclusive
+     */
     @Override
     public Long apply(ByteBuffer buffer) {
         checkArgument(buffer.limit() >= 1 && buffer.limit() <= 8,
