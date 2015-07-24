@@ -12,26 +12,26 @@ public class BooleanDecoderTest {
     private final BooleanDecoder decoder = new BooleanDecoder();
 
     @Test(expected = IllegalArgumentException.class)
-    public void decode_emptyBuffer_throwsException() {
-        decoder.decode(ByteBuffer.allocate(0), null, null);
+    public void apply_emptyBuffer_throwsException() {
+        decoder.apply(ByteBuffer.allocate(0));
     }
 
     @Test
-    public void decode_bufferWithLastBitSet_returnsTrue() {
+    public void apply_bufferWithLastBitSet_returnsTrue() {
         byte[] bytes = {1};
-        Boolean b = decoder.decode(ByteBuffer.wrap(bytes), null, null);
+        Boolean b = decoder.apply(ByteBuffer.wrap(bytes));
         assertTrue(b);
     }
 
     @Test
-    public void decode_bufferWithLastBitClear_returnsFalse() {
+    public void apply_bufferWithLastBitClear_returnsFalse() {
         byte[] bytes = {-2};
-        Boolean b = decoder.decode(ByteBuffer.wrap(bytes), null, null);
+        Boolean b = decoder.apply(ByteBuffer.wrap(bytes));
         assertFalse(b);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void decode_bufferSize2_throwsException() {
-        decoder.decode(ByteBuffer.allocate(2), null, null);
+    public void apply_bufferSize2_throwsException() {
+        decoder.apply(ByteBuffer.allocate(2));
     }
 }

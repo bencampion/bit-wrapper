@@ -3,19 +3,18 @@ package uk.recurse.bitwrapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
 import org.reflections.Reflections;
-import uk.recurse.bitwrapper.decoder.Decoder;
 
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class Wrapper {
 
-    private final Map<Class<?>, Decoder<?>> decoders;
+    private final Map<Class<?>, Function<ByteBuffer, ?>> decoders;
     private final ProxyFactory proxyFactory;
 
-    private Wrapper(Map<Class<?>, Decoder<?>> decoders, ProxyFactory proxyFactory) {
+    private Wrapper(Map<Class<?>, Function<ByteBuffer, ?>> decoders, ProxyFactory proxyFactory) {
         this.decoders = decoders;
         this.proxyFactory = proxyFactory;
     }
@@ -30,8 +29,8 @@ public class Wrapper {
     }
 
     @SuppressWarnings("unchecked")
-    <T> Decoder<T> getDecoder(Class<T> type) {
-        return (Decoder<T>) decoders.get(type);
+    <T> Function<ByteBuffer, T> getDecoder(Class<T> type) {
+        return (Function<ByteBuffer, T>) decoders.get(type);
     }
 
     public static Wrapper create() {
@@ -44,7 +43,7 @@ public class Wrapper {
 
     public static class Builder {
 
-        private final Map<Class<?>, Decoder<?>> decoders;
+        private final Map<Class<?>, Function<ByteBuffer, ?>> decoders;
 
         private Builder() {
             decoders = new HashMap<>();
@@ -54,10 +53,10 @@ public class Wrapper {
         @SuppressWarnings("unchecked")
         private void addDefaultDecoders() {
             Reflections reflections = new Reflections("uk.recurse.bitwrapper.decoder");
-            reflections.getSubTypesOf(Decoder.class).forEach(decoder -> {
+            reflections.getSubTypesOf(Function.class).forEach(decoder -> {
                 try {
-                    Class<?>[] params = {ByteBuffer.class, Method.class, Wrapper.class};
-                    Class<?> type = decoder.getMethod("decode", params).getReturnType();
+                    Class<?>[] params = {ByteBuffer.class};
+                    Class<?> type = decoder.getMethod("apply", params).getReturnType();
                     addDecoder(type, decoder.newInstance());
                 } catch (ReflectiveOperationException e) {
                     throw new AssertionError(e);
@@ -65,7 +64,7 @@ public class Wrapper {
             });
         }
 
-        public <T> Builder addDecoder(Class<T> type, Decoder<T> decoder) {
+        public <T> Builder addDecoder(Class<T> type, Function<ByteBuffer, T> decoder) {
             decoders.put(type, decoder);
             decoders.put(Primitives.unwrap(type), decoder);
             return this;

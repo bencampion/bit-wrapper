@@ -1,16 +1,14 @@
 package uk.recurse.bitwrapper.decoder;
 
-import uk.recurse.bitwrapper.Wrapper;
-
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
-public class InetAddressDecoder implements Decoder<InetAddress> {
+public class InetAddressDecoder implements Function<ByteBuffer, InetAddress> {
 
     @Override
-    public InetAddress decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
+    public InetAddress apply(ByteBuffer buffer) {
         byte[] addr = new byte[buffer.limit()];
         buffer.get(addr);
         try {

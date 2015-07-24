@@ -6,7 +6,6 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
-import uk.recurse.bitwrapper.decoder.Decoder;
 import uk.recurse.bitwrapper.exception.BadExpressionException;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
@@ -14,6 +13,7 @@ import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 class MethodHandler {
 
@@ -28,9 +28,9 @@ class MethodHandler {
 
     public Object invoke(Object proxy, Method method) {
         ByteBuffer slice = getSlice(proxy, method);
-        Decoder<?> decoder = wrapper.getDecoder(method.getReturnType());
+        Function<ByteBuffer, ?> decoder = wrapper.getDecoder(method.getReturnType());
         if (decoder != null) {
-            return decoder.decode(slice, method, wrapper);
+            return decoder.apply(slice);
         } else if (method.getReturnType().isInterface()) {
             return wrapper.wrap(slice, method.getReturnType());
         } else {

@@ -1,17 +1,15 @@
 package uk.recurse.bitwrapper.decoder;
 
-import uk.recurse.bitwrapper.Wrapper;
-
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.nio.ByteOrder.BIG_ENDIAN;
 
-public class LongDecoder implements Decoder<Long> {
+public class LongDecoder implements Function<ByteBuffer, Long> {
 
     @Override
-    public Long decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
+    public Long apply(ByteBuffer buffer) {
         checkArgument(buffer.limit() >= 1 && buffer.limit() <= 8,
                 "Long length must be >= 1 and <= 8");
         boolean bigEndian = buffer.order().equals(BIG_ENDIAN);

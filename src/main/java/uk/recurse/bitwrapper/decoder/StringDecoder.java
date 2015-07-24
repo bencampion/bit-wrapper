@@ -1,13 +1,11 @@
 package uk.recurse.bitwrapper.decoder;
 
-import uk.recurse.bitwrapper.Wrapper;
-
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Function;
 
-public class StringDecoder implements Decoder<String> {
+public class StringDecoder implements Function<ByteBuffer, String> {
 
     private final Charset charset;
 
@@ -20,7 +18,7 @@ public class StringDecoder implements Decoder<String> {
     }
 
     @Override
-    public String decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
+    public String apply(ByteBuffer buffer) {
         byte[] bytes = new byte[buffer.limit()];
         buffer.get(bytes);
         return new String(bytes, charset);

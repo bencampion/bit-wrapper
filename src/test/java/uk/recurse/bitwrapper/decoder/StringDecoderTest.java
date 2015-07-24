@@ -12,25 +12,25 @@ import static org.junit.Assert.assertTrue;
 public class StringDecoderTest {
 
     @Test
-    public void decode_emptyBuffer_returnsEmptyString() {
+    public void apply_emptyBuffer_returnsEmptyString() {
         StringDecoder decoder = new StringDecoder();
-        String s = decoder.decode(ByteBuffer.allocate(0), null, null);
+        String s = decoder.apply(ByteBuffer.allocate(0));
         assertTrue(s.isEmpty());
     }
 
     @Test
-    public void decode_ascii_returnsAsciiDecodedString() {
+    public void apply_ascii_returnsAsciiDecodedString() {
         StringDecoder decoder = new StringDecoder();
         byte[] bytes = {'&', ':'};
-        String s = decoder.decode(ByteBuffer.wrap(bytes), null, null);
+        String s = decoder.apply(ByteBuffer.wrap(bytes));
         assertThat(s, is("&:"));
     }
 
     @Test
-    public void decode_utf16_returnsUtf16DecodedString() {
+    public void apply_utf16_returnsUtf16DecodedString() {
         StringDecoder decoder = new StringDecoder(StandardCharsets.UTF_16);
         byte[] bytes = {'&', ':'};
-        String s = decoder.decode(ByteBuffer.wrap(bytes), null, null);
+        String s = decoder.apply(ByteBuffer.wrap(bytes));
         assertThat(s, is("☺"));
     }
 }

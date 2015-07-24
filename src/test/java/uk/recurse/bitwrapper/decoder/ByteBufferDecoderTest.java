@@ -14,9 +14,9 @@ public class ByteBufferDecoderTest {
     private final ByteBufferDecoder decoder = new ByteBufferDecoder();
 
     @Test
-    public void decode_buffer_returnsSameInstance() {
+    public void apply_buffer_returnsSameInstance() {
         ByteBuffer buffer = ByteBuffer.allocate(0);
-        ByteBuffer decoded = decoder.decode(buffer, null, null);
+        ByteBuffer decoded = decoder.apply(buffer);
         assertThat(decoded, sameInstance(buffer));
     }
 }

@@ -1,14 +1,12 @@
 package uk.recurse.bitwrapper.decoder;
 
-import uk.recurse.bitwrapper.Wrapper;
-
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
-public class ByteBufferDecoder implements Decoder<ByteBuffer> {
+public class ByteBufferDecoder implements Function<ByteBuffer, ByteBuffer> {
 
     @Override
-    public ByteBuffer decode(ByteBuffer buffer, Method method, Wrapper wrapper) {
+    public ByteBuffer apply(ByteBuffer buffer) {
         return buffer;
     }
 }

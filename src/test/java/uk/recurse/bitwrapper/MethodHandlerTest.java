@@ -8,13 +8,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.recurse.bitwrapper.annotation.Bits;
 import uk.recurse.bitwrapper.annotation.Bytes;
-import uk.recurse.bitwrapper.decoder.Decoder;
 import uk.recurse.bitwrapper.exception.BadExpressionException;
 import uk.recurse.bitwrapper.exception.MissingAnnotationException;
 import uk.recurse.bitwrapper.exception.UnsupportedTypeException;
 
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
+import java.util.function.Function;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -32,7 +32,7 @@ public class MethodHandlerTest {
     @Mock
     private Wrapper wrapper;
     @Mock
-    private Decoder<Integer> decoder;
+    private Function<ByteBuffer, Integer> decoder;
     @InjectMocks
     private MethodHandler methodHandler;
 
@@ -46,7 +46,7 @@ public class MethodHandlerTest {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("byteAnnotated");
         when(bufferSlicer.byteSlice(7, 3)).thenReturn(buffer);
-        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
+        when(decoder.apply(buffer)).thenReturn(42);
 
         Object returned = methodHandler.invoke(proxy, method);
 
@@ -58,7 +58,7 @@ public class MethodHandlerTest {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("bitAnnotated");
         when(bufferSlicer.bitSlice(7, 3)).thenReturn(buffer);
-        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
+        when(decoder.apply(buffer)).thenReturn(42);
 
         Object returned = methodHandler.invoke(proxy, method);
 
@@ -71,7 +71,7 @@ public class MethodHandlerTest {
         ByteBuffer buffer = ByteBuffer.allocate(0);
         Method method = TestMethods.class.getMethod("returnsInterface");
         when(bufferSlicer.byteSlice(7, 3)).thenReturn(buffer);
-        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
+        when(decoder.apply(buffer)).thenReturn(42);
         when(wrapper.wrap(buffer, CharSequence.class)).thenReturn(view);
 
         Object returned = methodHandler.invoke(proxy, method);
@@ -86,7 +86,7 @@ public class MethodHandlerTest {
         when(proxy.offset()).thenReturn(5);
         when(proxy.length()).thenReturn(11);
         when(bufferSlicer.byteSlice(5, 11)).thenReturn(buffer);
-        when(decoder.decode(buffer, method, wrapper)).thenReturn(42);
+        when(decoder.apply(buffer)).thenReturn(42);
 
         Object returned = methodHandler.invoke(proxy, method);
 

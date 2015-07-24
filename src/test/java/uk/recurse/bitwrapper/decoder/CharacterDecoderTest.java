@@ -14,34 +14,34 @@ public class CharacterDecoderTest {
     private final CharacterDecoder decoder = new CharacterDecoder();
 
     @Test(expected = IllegalArgumentException.class)
-    public void decode_bufferSize0_throwsException() {
-        decoder.decode(ByteBuffer.allocate(0), null, null);
+    public void apply_bufferSize0_throwsException() {
+        decoder.apply(ByteBuffer.allocate(0));
     }
 
     @Test
-    public void decode_bufferSize1_returnsCharacter() {
+    public void apply_bufferSize1_returnsCharacter() {
         byte[] bytes = {(byte) 'µ'};
-        Character c = decoder.decode(ByteBuffer.wrap(bytes), null, null);
+        Character c = decoder.apply(ByteBuffer.wrap(bytes));
         assertThat(c, is('µ'));
     }
 
     @Test
-    public void decode_bufferSize2_returnsCharacter() {
+    public void apply_bufferSize2_returnsCharacter() {
         byte[] bytes = Chars.toByteArray('☺');
-        Character c = decoder.decode(ByteBuffer.wrap(bytes), null, null);
+        Character c = decoder.apply(ByteBuffer.wrap(bytes));
         assertThat(c, is('☺'));
     }
 
     @Test
-    public void decode_littleEndianBuffer_returnsBytesInCorrectOrder() {
+    public void apply_littleEndianBuffer_returnsBytesInCorrectOrder() {
         byte[] bytes = Chars.toByteArray(Character.reverseBytes('☺'));
         ByteBuffer buffer = ByteBuffer.wrap(bytes).order(LITTLE_ENDIAN);
-        Character c = decoder.decode(buffer, null, null);
+        Character c = decoder.apply(buffer);
         assertThat(c, is('☺'));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void decode_bufferSize3_throwsException() {
-        decoder.decode(ByteBuffer.allocate(3), null, null);
+    public void apply_bufferSize3_throwsException() {
+        decoder.apply(ByteBuffer.allocate(3));
     }
 }

@@ -15,29 +15,29 @@ public class FloatDecoderTest {
     private final FloatDecoder decoder = new FloatDecoder();
 
     @Test(expected = IllegalArgumentException.class)
-    public void decode_bufferSize3_throwsException() {
-        decoder.decode(ByteBuffer.allocate(3), null, null);
+    public void apply_bufferSize3_throwsException() {
+        decoder.apply(ByteBuffer.allocate(3));
     }
 
     @Test
-    public void decode_bufferSize4_returnsBytes() {
+    public void apply_bufferSize4_returnsBytes() {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.putFloat(0, (float) Math.PI);
-        Float f = decoder.decode(buffer, null, null);
+        Float f = decoder.apply(buffer);
         assertThat(f, is((float) Math.PI));
     }
 
     @Test
-    public void decode_littleEndianBuffer_returnsBytesInCorrectOrder() {
+    public void apply_littleEndianBuffer_returnsBytesInCorrectOrder() {
         ByteBuffer buffer = ByteBuffer.allocate(4);
         buffer.putFloat(0, (float) Math.PI);
         Collections.reverse(Bytes.asList(buffer.array()));
-        Float f = decoder.decode(buffer.order(LITTLE_ENDIAN), null, null);
+        Float f = decoder.apply(buffer.order(LITTLE_ENDIAN));
         assertThat(f, is((float) Math.PI));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void decode_bufferSize5_throwsException() {
-        decoder.decode(ByteBuffer.allocate(5), null, null);
+    public void apply_bufferSize5_throwsException() {
+        decoder.apply(ByteBuffer.allocate(5));
     }
 }
