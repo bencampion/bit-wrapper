@@ -15,7 +15,7 @@ class BufferSlicer {
         ByteBuffer copy = buffer.duplicate();
         copy.position(offset);
         copy.limit(offset + length);
-        return copy.slice();
+        return copy.slice().asReadOnlyBuffer();
     }
 
     public ByteBuffer bitSlice(int offset, int length) {

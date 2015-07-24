@@ -5,6 +5,7 @@ import org.junit.Test;
 import uk.recurse.bitwrapper.annotation.Bytes;
 
 import java.nio.ByteBuffer;
+import java.nio.ReadOnlyBufferException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -51,10 +52,9 @@ public class UdpPacketTest {
         assertThat(udp.payload(), is(payload));
     }
 
-    @Test
-    public void payload_modifyingBuffer_modifiesWrappedArray() {
+    @Test(expected = ReadOnlyBufferException.class)
+    public void payload_modifyingBuffer_throwsException() {
         udp.payload().put(0, (byte) 42);
-        assertThat(packet[8], is((byte) 42));
     }
 
     @Test

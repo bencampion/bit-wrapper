@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class BufferSlicerTest {
 
@@ -17,6 +18,12 @@ public class BufferSlicerTest {
             (byte) 0b00000000
     };
     private final BufferSlicer bufferSlicer = new BufferSlicer(ByteBuffer.wrap(bytes));
+
+    @Test
+    public void byteSlice_returnsReadOnlyBuffer() {
+        ByteBuffer slice = bufferSlicer.byteSlice(0, 5);
+        assertTrue(slice.isReadOnly());
+    }
 
     @Test
     public void byteSlice_offset0Length0_returnsEmptyBuffer() {
@@ -70,6 +77,12 @@ public class BufferSlicerTest {
     @Test(expected = IndexOutOfBoundsException.class)
     public void byteSlice_offset6Length0_throwsException() {
         bufferSlicer.byteSlice(6, 0);
+    }
+
+    @Test
+    public void bitSlice_returnsReadOnlyBuffer() {
+        ByteBuffer slice = bufferSlicer.bitSlice(0, 40);
+        assertTrue(slice.isReadOnly());
     }
 
     @Test
