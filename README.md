@@ -1,5 +1,7 @@
 # Bit Wrapper
 
+[![Build Status](https://travis-ci.org/bencampion/bit-wrapper.svg?branch=master)](https://travis-ci.org/bencampion/bit-wrapper) [![Coverage Status](http://coveralls.io/repos/bencampion/bit-wrapper/badge.svg?branch=master&service=github)](http://coveralls.io/github/bencampion/bit-wrapper?branch=master)
+
 Bit wrapper is an declarative framework written in Java for parsing binary data in a `byte[]` or `ByteBuffer`. It uses annotated interfaces to describe the fields in a bitstream and generates implementations of these interfaces at runtime that can be used to access the fields. Bit Wrapper is lazy; it doesn't copy data from the underlying `byte[]` or `ByteBuffer` until it needs to.
 
 * [API documentation](https://bencampion.github.io/bit-wrapper/apidocs/)
