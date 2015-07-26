@@ -30,7 +30,7 @@ public class MethodHandlerTest {
     @Mock
     private BufferSlicer bufferSlicer;
     @Mock
-    private Wrapper wrapper;
+    private BitWrapper wrapper;
     @Mock
     private Function<ByteBuffer, Integer> decoder;
     @InjectMocks

@@ -24,7 +24,7 @@ public class PngChunkTest {
         buffer.put(TYPE.getBytes(StandardCharsets.US_ASCII));
         buffer.put(CRC);
         buffer.rewind();
-        pngChunk = Wrapper.create().wrap(buffer, PngChunk.class);
+        pngChunk = BitWrapper.create().wrap(buffer, PngChunk.class);
     }
 
     @Test

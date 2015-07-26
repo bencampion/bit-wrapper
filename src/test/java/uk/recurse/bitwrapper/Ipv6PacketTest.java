@@ -27,7 +27,7 @@ public class Ipv6PacketTest {
         buffer.put(InetAddress.getByName(SOURCE).getAddress());
         buffer.put(InetAddress.getByName(DESTINATION).getAddress());
         buffer.rewind();
-        packet = Wrapper.create().wrap(buffer, Ipv6Packet.class);
+        packet = BitWrapper.create().wrap(buffer, Ipv6Packet.class);
     }
 
     @Test

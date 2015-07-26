@@ -18,7 +18,7 @@ public class UdpPacketTest {
     @Before
     public void setup() {
         packet = new byte[]{0, 42, 0, 94, 0, 9, 1, 0, -1};
-        udp = Wrapper.create().wrap(packet, UdpPacket.class);
+        udp = BitWrapper.create().wrap(packet, UdpPacket.class);
     }
 
     @Test

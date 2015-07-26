@@ -19,9 +19,9 @@ class MethodHandler {
 
     private final ExpressionParser parser = new SpelExpressionParser();
     private final BufferSlicer bufferSlicer;
-    private final Wrapper wrapper;
+    private final BitWrapper wrapper;
 
-    public MethodHandler(BufferSlicer bufferSlicer, Wrapper wrapper) {
+    public MethodHandler(BufferSlicer bufferSlicer, BitWrapper wrapper) {
         this.bufferSlicer = bufferSlicer;
         this.wrapper = wrapper;
     }

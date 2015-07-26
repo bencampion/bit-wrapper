@@ -17,7 +17,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WrapperTest {
+public class BitWrapperTest {
 
     @Mock
     private Map<Class<?>, Function<ByteBuffer, ?>> decoders;
@@ -26,7 +26,7 @@ public class WrapperTest {
     private ProxyFactory proxyFactory;
 
     @InjectMocks
-    private Wrapper wrapper;
+    private BitWrapper wrapper;
 
     @Test(expected = NullPointerException.class)
     public void wrapArray_nullArray_throwsException() {
@@ -47,14 +47,14 @@ public class WrapperTest {
     @Test
     public void builder_addDecoder_addsDecoderToWrapper() {
         Function<ByteBuffer, Object> decoder = (buffer) -> new Object();
-        Wrapper wrapper = Wrapper.builder().addDecoder(Object.class, decoder).build();
+        BitWrapper wrapper = BitWrapper.builder().addDecoder(Object.class, decoder).build();
         assertThat(wrapper.getDecoder(Object.class), sameInstance(decoder));
     }
 
     @Test
     public void builder_addPrimitiveDecoder_addsDecoderToWrapperForPrimitiveAndWrappedTypes() {
         Function<ByteBuffer, Integer> decoder = (buffer) -> 0;
-        Wrapper wrapper = Wrapper.builder().addDecoder(Integer.class, decoder).build();
+        BitWrapper wrapper = BitWrapper.builder().addDecoder(Integer.class, decoder).build();
         assertThat(wrapper.getDecoder(Integer.class), sameInstance(decoder));
         assertThat(wrapper.getDecoder(int.class), sameInstance(decoder));
     }

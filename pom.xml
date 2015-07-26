@@ -7,7 +7,8 @@
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>bit-wrapper</name>
+  <name>Bit Wrapper</name>
+  <description>A declarative framework for parsing binary data using annotated interfaces.</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

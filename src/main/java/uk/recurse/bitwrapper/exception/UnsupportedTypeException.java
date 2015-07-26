@@ -1,11 +1,13 @@
 package uk.recurse.bitwrapper.exception;
 
+import uk.recurse.bitwrapper.BitWrapper;
+
 import java.util.function.Function;
 
 /**
  * Thrown when no decoder exists for the type being decoded.
  *
- * @see uk.recurse.bitwrapper.Wrapper.Builder#addDecoder(Class, Function)
+ * @see BitWrapper.Builder#addDecoder(Class, Function)
  */
 public class UnsupportedTypeException extends RuntimeException {
 

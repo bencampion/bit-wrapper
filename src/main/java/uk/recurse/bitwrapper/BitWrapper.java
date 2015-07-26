@@ -33,17 +33,17 @@ import java.util.function.Function;
  * </code></pre>
  * Using the view:
  * <pre><code>
- * Wrapper wrapper = Wrapper.create();
+ * BitWrapper wrapper = BitWrapper.create();
  * UdpPacket udpPacket = wrapper.wrap(buffer, UdpPacket.class);
  * int source = udpPacket.sourcePort();
  * </code></pre>
  */
-public class Wrapper {
+public class BitWrapper {
 
     private final Map<Class<?>, Function<ByteBuffer, ?>> decoders;
     private final ProxyFactory proxyFactory;
 
-    private Wrapper(Map<Class<?>, Function<ByteBuffer, ?>> decoders, ProxyFactory proxyFactory) {
+    private BitWrapper(Map<Class<?>, Function<ByteBuffer, ?>> decoders, ProxyFactory proxyFactory) {
         this.decoders = decoders;
         this.proxyFactory = proxyFactory;
     }
@@ -82,7 +82,7 @@ public class Wrapper {
     /**
      * Returns a new instance that uses the decoders in the {@link uk.recurse.bitwrapper.decoder} package.
      */
-    public static Wrapper create() {
+    public static BitWrapper create() {
         return new Builder().build();
     }
 
@@ -94,7 +94,7 @@ public class Wrapper {
     }
 
     /**
-     * A builder for creating Wrapper instances. New builders are created using {@link Wrapper#builder()}.
+     * A builder for creating BitWrapper instances. New builders are created using {@link BitWrapper#builder()}.
      */
     public static class Builder {
 
@@ -120,7 +120,7 @@ public class Wrapper {
         }
 
         /**
-         * Adds a decoder for the Wrapper to use.
+         * Adds an additional decoder function.
          *
          * @param type    the Java type decoded by this decoder
          * @param decoder the decoder
@@ -132,10 +132,10 @@ public class Wrapper {
         }
 
         /**
-         * Returns a newly created Wrapper
+         * Returns a newly created BitWrapper
          */
-        public Wrapper build() {
-            return new Wrapper(ImmutableMap.copyOf(decoders), new ProxyFactory());
+        public BitWrapper build() {
+            return new BitWrapper(ImmutableMap.copyOf(decoders), new ProxyFactory());
         }
     }
 }
