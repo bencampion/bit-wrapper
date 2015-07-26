@@ -139,7 +139,7 @@ Function<ByteBuffer, Instant> unixTime = new IntegerDecoder().andThen(Instant::o
 
 The behaviour of the provided functions can be overridden by creating a new function with the desired behaviour. Here's an example of how to replace the default ASCII `String` decoder with a UTF-8 one:
 
-```
+```java
 Function<ByteBuffer, Instant> utf8 = new StringDecoder(StandardCharsets.UTF_8);
 BitWrapper wrapper = BitWrapper.builder().addDecoder(String.class utf8).build();
 ```
