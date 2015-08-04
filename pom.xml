@@ -3,7 +3,7 @@
 
   <groupId>uk.recurse.bitwrapper</groupId>
   <artifactId>bit-wrapper</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>Bit Wrapper</name>
@@ -28,7 +28,7 @@
     <connection>scm:git:git@github.com:bencampion/bit-wrapper.git</connection>
     <developerConnection>scm:git:git@github.com:bencampion/bit-wrapper.git</developerConnection>
     <url>git@github.com:bencampion/bit-wrapper.git</url>
-    <tag>bit-wrapper-0.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
