@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>uk.recurse.bitwrapper</groupId>
   <artifactId>bit-wrapper</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <packaging>jar</packaging>
 
   <name>Bit Wrapper</name>
@@ -29,6 +28,7 @@
     <connection>scm:git:git@github.com:bencampion/bit-wrapper.git</connection>
     <developerConnection>scm:git:git@github.com:bencampion/bit-wrapper.git</developerConnection>
     <url>git@github.com:bencampion/bit-wrapper.git</url>
+    <tag>bit-wrapper-0.1.0</tag>
   </scm>
 
   <distributionManagement>
