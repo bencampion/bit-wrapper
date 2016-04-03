@@ -131,7 +131,7 @@ These functions are automatically loaded when creating `BitWapper` instances. Ad
 
 ```java
 Function<ByteBuffer, Instant> unixTime = buf -> Instant.ofEpochSecond(buf.getInt());
-BitWrapper wrapper = BitWrapper.builder().addDecoder(Instance.class unixTime).build();
+BitWrapper wrapper = BitWrapper.builder().addDecoder(Instance.class, unixTime).build();
 ```
 
 New decoders can be created by composing existing decoders functions. The Unix timestamp decoder in the previous example could also be written like this:
@@ -144,7 +144,7 @@ The behaviour of the provided functions can be overridden by creating a new func
 
 ```java
 Function<ByteBuffer, Instant> utf8 = new StringDecoder(StandardCharsets.UTF_8);
-BitWrapper wrapper = BitWrapper.builder().addDecoder(String.class utf8).build();
+BitWrapper wrapper = BitWrapper.builder().addDecoder(String.class, utf8).build();
 ```
 
 ## Under the hood
